@@ -1,0 +1,123 @@
+#accessibility-and-non-discrimination {
+    box-sizing: border-box;
+    color: #035270;
+    margin: 30px auto;
+    padding: 16px 20px;
+    text-align: left !important;
+}
+
+#accessibility-and-non-discrimination .alert {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background: #DDEEF4;
+    border: #8ED4ED 1px solid;
+    border-radius: 4px;
+    color: #035270;
+    display: inline-block;
+    font-size: 14px;
+    margin: 0 0 30px 0;
+    padding: 25px;
+    text-shadow: none;
+}
+
+#accessibility-and-non-discrimination .alert p {
+    font-weight: 400;
+    margin: 0;
+}
+
+#accessibility-and-non-discrimination .col {
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 0;
+    margin-right: 1%;
+    margin-right: 0.6em;
+    margin-right: 0.6rem;
+    margin-right: 0.6vw;
+}
+
+#accessibility-and-non-discrimination .col a,
+.invert #accessibility-and-non-discrimination .col a,
+#accessibility-and-non-discrimination.invert .col a {
+    color: #0F92C7;
+    display: block;
+    font-weight: 400;
+    padding: 10px 0;
+    text-decoration: none!important;
+    white-space: nowrap;
+}
+
+#accessibility-and-non-discrimination .row {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#accessibility-and-non-discrimination .row:after {
+    clear: both;
+    content: ""!important;
+    display: table;
+}
+
+#accessibility-and-non-discrimination a {
+    color: #0073AE;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+}
+
+#accessibility-and-non-discrimination a,
+.invert #accessibility-and-non-discrimination a,
+#accessibility-and-non-discrimination.invert a {
+    text-decoration: underline!important;
+}
+
+#accessibility-and-non-discrimination h3 {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+#accessibility-and-non-discrimination h5 {
+    color: #333;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+#accessibility-and-non-discrimination li:after {
+    content: "" !important;
+}
+
+.invert #accessibility-and-non-discrimination  .alert,
+#accessibility-and-non-discrimination.invert .alert {
+    background: none;
+    border-width: 0;
+    color: #FFF;
+    padding: 0;
+    text-shadow: none;
+}
+
+.invert #accessibility-and-non-discrimination .alert p,
+#accessibility-and-non-discrimination.invert .alert p {
+    border-width: 0;
+    color: #FFF;
+    padding: 0;
+    text-shadow: none;
+}
+
+.invert #accessibility-and-non-discrimination h5,
+#accessibility-and-non-discrimination.invert h5 {
+    color: #85A9B7;
+}
+
+.invert #accessibility-and-non-discrimination,
+.invert #accessibility-and-non-discrimination a,
+#accessibility-and-non-discrimination.invert,
+#accessibility-and-non-discrimination.invert a {
+    color: #FFF !important;
+}
+
+@media (print) {
+  #accessibility-and-non-discrimination {
+    display: none;
+  }
+}

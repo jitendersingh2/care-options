@@ -1,0 +1,815 @@
+#if($loggedInMember && $cookies.LDAPUserID.value)
+
+## Partials
+#parse("members/secure/velocityData/macros.vm")
+#parse("members/secure/velocityData/data-demoMode.vm")
+#parse("members/secure/velocityData/data-carvedOutPharmacy.vm")
+#parse("members/secure/velocityData/data-delhaize.vm")
+#parse("members/secure/velocityData/data-activeLobs.vm")
+#parse("members/secure/velocityData/data-bcbsncMember.vm")
+#parse("members/secure/velocityData/data-schedule.vm")
+##
+## Namespace - wo is used to designate Web Office controlled variables
+#set($wo = {})
+##
+## Objects
+##
+#set($wo.thisMember = {})
+#set($wo.thisMember.address = {})
+#set($wo.defaultPolicy = {})
+#set($wo.anyActivePolicy = {})
+#set($wo.anyPolicy = {})
+#set($wo.drugPolicy = {})
+#set($wo.dentalPolicy = {})
+#set($wo.access = {})
+#set($wo.program = {})
+#set($wo.account = {})
+#set($wo.demo = {})
+#set($wo.feature = {})
+#set($wo.page = {})
+##
+##
+## Page
+##
+#set($wo.page.type = $pageType)
+##
+##
+## Demo
+##
+#set($wo.demo.demoMode					= $demoMode)
+##
+## Logged In Member
+##
+#set($wo.thisMember.firstName			= $loggedInMember.defaultMember.firstName)
+#set($wo.thisMember.lastName			= $loggedInMember.defaultMember.lastName)
+#set($wo.thisMember.middleInitial		= $loggedInMember.defaultMember.middleInitial)
+#set($wo.thisMember.displayName			= $loggedInMember.getFullname())
+#set($wo.thisMember.email				= $loggedInMember.getEmail())
+#set($wo.thisMember.activeLobs			= $activeLobs)
+#set($wo.thisMember.bcbsncMember		= $bcbsnc)
+#set($wo.thisMember.memberKey			= $loggedInMember.defaultMember.index)
+#set($wo.thisMember.birthDate			= $loggedInMember.defaultMember.birthDate)
+#set($wo.thisMember.age				= $loggedInMember.defaultMember.age)
+#set($wo.thisMember.gender				= $loggedInMember.defaultMember.gender)
+#set($wo.thisMember.relationship		= $loggedInMember.defaultMemberRelationship)
+#set($wo.thisMember.isSubscriber		= $wo.thisMember.relationship == "SELF")
+#set($wo.thisMember.memberIdBluemapHash = $loggedInMember.getPolicyAttributeByName('memberIdBluemapHash'))
+#set($wo.thisMember.address.line1		= $loggedInMember.defaultMember.address.addressLine1)
+#set($wo.thisMember.address.line2		= $loggedInMember.defaultMember.address.addressLine2)
+#set($wo.thisMember.address.city		= $loggedInMember.defaultMember.address.city)
+#set($wo.thisMember.address.state	= $loggedInMember.defaultMember.address.state)
+#set($wo.thisMember.address.zip		= $loggedInMember.defaultMember.address.zip)
+#set($wo.thisMember.policies			= $loggedInMember.membersAndPolicies.policies.size())
+#set($wo.thisMember.benefitPackage		= $loggedInMember.defaultMember.benefitPackage)
+##
+## Default Policy
+##
+#set($policy						= $loggedInMember.defaultPolicy)
+#IsStatePolicy($policy				$wo.defaultPolicy.stateGroup )
+#IndividualPolicy($policy			$wo.defaultPolicy.individual )
+#DrugPolicy($policy				$wo.defaultPolicy.isPDP )
+#HSA($policy						$wo.defaultPolicy.isHSA )
+#HRA($policy						$wo.defaultPolicy.isHRA )
+#Dental($policy					$wo.defaultPolicy.isDental)
+#Over65Policy2($policy				$wo.defaultPolicy.isOver65)
+#BBTPolicy($policy					$wo.feature.isBBT)
+#PerformanceGuaranteePolicy($policy					$wo.feature.isPerformanceGuarantee)
+##
+## Any Active Policies
+##
+#set($wo.thisMember.hasNoActivePolicies = true)
+#foreach( $policy in $loggedInMember.membersAndPolicies.policies )
+	#if($policy.active)
+	#IsStatePolicy(		$policy $wo.anyActivePolicy.isState )
+	#IndividualPolicy(	$policy $wo.anyActivePolicy.isIndividual )
+	#policyHasClaims(	$policy $wo.anyActivePolicy.hasClaims )
+	#DrugPolicy(		$policy $wo.anyActivePolicy.isPDP )
+	#HSA(				$policy $wo.anyActivePolicy.isHSA )
+	#HRA(				$policy $wo.anyActivePolicy.isHRA )
+	#HMO(				$policy $wo.anyActivePolicy.isHMO )
+	#Dental(			$policy $wo.anyActivePolicy.isDental )
+	#Over65Policy2(	 $policy $wo.anyActivePolicy.isOver65 )
+    #BillingAndPaymentPolicy( $policy $wo.anyActivePolicy.billingAndPayment $wo.thisMember.isSubscriber)
+    #ManageYourPolicy( $policy $wo.anyActivePolicy.manageYourPolicy $wo.thisMember.isSubscriber)
+	#set($wo.thisMember.hasNoActivePolicies = false)
+	#end
+#end
+##
+## Any Policies
+##
+#foreach( $policy in $loggedInMember.membersAndPolicies.policies )
+	#IsStatePolicy(		$policy $wo.anyPolicy.isState )
+	#IndividualPolicy(	$policy $wo.anyPolicy.isIndividual )
+	#policyHasClaims(	$policy $wo.anyPolicy.hasClaims )
+	#DrugPolicy(		$policy $wo.anyPolicy.isPDP )
+	#HSA(			$policy $wo.anyPolicy.isHSA )
+	#HRA(			$policy $wo.anyPolicy.isHRA )
+	#Dental(			$policy $wo.anyPolicy.isDental )
+#end
+#set($wo.anyPolicy.delhaize = $delhaize)
+##
+##
+##
+#set($wo.defaultPolicy.index		= $loggedInMember.defaultPolicy.index)
+#set($wo.defaultPolicy.isMedical	= !$wo.defaultPolicy.isDental && !$wo.defaultPolicy.isPDP)
+#set($wo.defaultPolicy.isActive		= $loggedInMember.defaultPolicy.active)
+#set($wo.defaultPolicy.isGroup		= $loggedInMember.defaultPolicy.group)
+#set($wo.defaultPolicy.hasDental		= $loggedInMember.hasAccess("DENTAL") || $wo.anyActivePolicy.isDental)
+#set($wo.defaultPolicy.isIndividual	= $loggedInMember.defaultPolicy.individual)
+#set($wo.defaultPolicy.isListBill		= $loggedInMember.defaultPolicy.isListBill())
+#set($wo.defaultPolicy.lobCode		= $loggedInMember.defaultPolicy.lobCode)
+#set($wo.defaultPolicy.searchLOB	= $wo.defaultPolicy.lobCode)
+#set($wo.defaultPolicy.sourceSystem = $loggedInMember.getPolicyAttributeByName("sourceSystem"))
+#set($wo.defaultPolicy.topaz		= $wo.defaultPolicy.sourceSystem == 'Topaz' || $wo.defaultPolicy.sourceSystem == 'T')
+#set($wo.defaultPolicy.amisys		= $wo.defaultPolicy.sourceSystem == 'Amisys' || $wo.defaultPolicy.sourceSystem == 'A')
+## TEMP TEMP TEMP TEMP TEMP
+	#if($wo.defaultPolicy.lobCode == 'ME')
+		#set($wo.defaultPolicy.lobCode = 'MADH')
+	#end
+## END TEMP TEMP TEMP TEMP TEMP
+
+
+#set($wo.defaultPolicy.lobName		= $loggedInMember.defaultPolicy.lobDesc)
+#set($wo.defaultPolicy.subscriberKey	= $loggedInMember.defaultPolicy.subscriberKey)
+#set($wo.defaultPolicy.policyKey		= $loggedInMember.defaultPolicy.index)
+#set($wo.defaultPolicy.effectiveDate	= $dateFormat.format($loggedInMember.defaultPolicy.effectiveDate))
+#set($wo.defaultPolicy.expirationDate= $dateFormat.format($loggedInMember.defaultPolicy.expirationDate))
+
+#set($wo.defaultPolicy.effectiveMonth = $dateFormat.format($loggedInMember.defaultPolicy.effectiveDate).substring(0,$dateFormat.format($loggedInMember.defaultPolicy.effectiveDate).indexOf('/')))
+#set($wo.defaultPolicy.firstMonthEffective = $wo.defaultPolicy.effectiveMonth.replace('0','') == $date.get('M'))
+
+#set($wo.defaultPolicy.isState= $loggedInMember.defaultPolicy.stateGroup)
+#if($wo.defaultPolicy.isState)
+	#set($wo.defaultPolicy.groupName	= "North Carolina State Health Plan")
+	#set($wo.defaultPolicy.searchLOB	= "SPPO")
+#else
+	#set($wo.defaultPolicy.groupName	= $loggedInMember.defaultPolicy.groupName.replace("'","\'"))
+#end
+#set($wo.defaultPolicy.fepDental	= $loggedInMember.defaultPolicy.groupName == "FEP DENTAL")
+#set($wo.defaultPolicy.groupNumber			= $loggedInMember.defaultPolicy.groupNumber)
+#set($wo.defaultPolicy.ASO				= $loggedInMember.defaultPolicy.companyNumber == "ASOGRP")
+#set($wo.defaultPolicy.fullyInsuredGroup	= $loggedInMember.defaultPolicy.companyNumber == "INSMEWA")
+#set($wo.defaultPolicy.individualBusiness	= $loggedInMember.defaultPolicy.companyNumber == "INDIV")
+#set($wo.defaultPolicy.externalID			= $loggedInMember.defaultPolicy.externalID)
+#set($wo.defaultPolicy.updateContact		= $loggedInMember.getPolicyAttributeByName('hasChangeContact') == 'true')
+#set($wo.defaultPolicy.blueValue			= $wo.defaultPolicy.lobName == 'Blue Value')
+#set($wo.defaultPolicy.blueSelect			= $wo.defaultPolicy.lobName == 'Blue Select')
+#set($wo.defaultPolicy.blueLocal			= $wo.defaultPolicy.lobName == 'Blue Local' || $wo.defaultPolicy.lobCode == 'ICLT')
+#set($wo.defaultPolicy.blueLocalCHS		= $wo.defaultPolicy.lobCode == 'CHLT')
+#set($wo.defaultPolicy.blueLocalDukeWake  = $wo.defaultPolicy.lobCode == 'ITNG')
+#set($wo.defaultPolicy.blueLocalDukeGroups  = $wo.defaultPolicy.lobCode == 'TRNG')
+#set($wo.defaultPolicy.blueOptions			= $wo.defaultPolicy.lobCode == "TB123" || $cookies.get('LOBCode').getValue() == 'TB123' || $wo.defaultPolicy.lobCode == "PPO1")
+#set($wo.defaultPolicy.PPO				= ($wo.defaultPolicy.lobCode == "PPO1" || $wo.defaultPolicy.lobCode == "CMM1" || $wo.defaultPolicy.lobCode == "HMO1" ) && $cookies.get('LOBCode').getValue() != 'TB123')
+#set($wo.defaultPolicy.medicareSupplement	= $wo.defaultPolicy.lobCode == 'MED')
+#set($wo.defaultPolicy.medicareAdvantage	= $wo.defaultPolicy.lobCode == 'MADH' || $wo.defaultPolicy.lobCode == 'MADP')
+#set($wo.defaultPolicy.isSeniorAgencyRestricted	= $loggedInMember.defaultPolicy.isSeniorAgencyRestricted)
+#set($wo.defaultPolicy.PDP				= $wo.defaultPolicy.lobCode == 'PDP')
+#set($wo.defaultPolicy.PDPE				= $wo.defaultPolicy.PDP && ($wo.defaultPolicy.groupNumber == '099200'))
+#set($wo.defaultPolicy.medicareSupplementPDP = $wo.anyActivePolicy.isPDP && $wo.defaultPolicy.medicareSupplement)
+#set($wo.defaultPolicy.blueAssurance		= $wo.defaultPolicy.lobCode == 'IBAS')
+#set($wo.defaultPolicy.HMO					= $wo.defaultPolicy.lobCode == 'HMO1')
+#set($wo.defaultPolicy.blueSaver			= $wo.defaultPolicy.lobCode == 'ISAV01' || $wo.defaultPolicy.lobCode == 'ISAV02' || $wo.defaultPolicy.lobCode == 'ISAV03')
+#set($wo.defaultPolicy.onExchange		= $loggedInMember.defaultPolicy.onExchange)
+#set($wo.defaultPolicy.isTroop			= $loggedInMember.getPolicyAttributeByName($wo.defaultPolicy.index,"isTroop") == 'true')
+#set($wo.defaultPolicy.townofcary       = $wo.defaultPolicy.groupNumber == '052108')
+#set($wo.defaultPolicy.franklinCounty       = $wo.defaultPolicy.groupNumber == '057407')
+#set($wo.defaultPolicy.wielandCopperProducts  = $wo.defaultPolicy.groupNumber == '081769')
+#set($wo.defaultPolicy.isFranklinCountyWielandCopperProducts  = $wo.defaultPolicy.franklinCounty || $wo.defaultPolicy.wielandCopperProducts)
+#set($wo.defaultPolicy.cityOfDurham    = $wo.defaultPolicy.groupNumber == "069114")
+#set($wo.defaultPolicy.moreThanfiftyOnePlusMembers    = $loggedInMember.getAttribute('marketSegmentCode') == 'LGNTLUND' || $loggedInMember.getAttribute('marketSegmentCode') == 'STUDENT' || $loggedInMember.getAttribute('marketSegmentCode') == 'MIX' || $loggedInMember.getAttribute('marketSegmentCode') == 'MEDLOCL' || $loggedInMember.getAttribute('marketSegmentCode') == 'LRGLOCL' || $loggedInMember.getAttribute('marketSegmentCode') == 'FEP')
+
+#set($wo.defaultPolicy.reynoldsAmerican = $wo.defaultPolicy.groupNumber == '081069' || $wo.defaultPolicy.groupNumber == '081070' || $wo.defaultPolicy.groupNumber == '081920' || $wo.defaultPolicy.groupNumber == '080959' || $wo.defaultPolicy.groupNumber == '080960' || $wo.defaultPolicy.groupNumber == '080961' || $wo.defaultPolicy.groupNumber == '080962' || $wo.defaultPolicy.groupNumber == '080963')
+#set($wo.defaultPolicy.compassGroup = $wo.defaultPolicy.groupNumber == '008952' || $wo.defaultPolicy.groupNumber == '009971')
+#set($wo.defaultPolicy.buckRightOptXerox = $wo.defaultPolicy.groupNumber == '081507' || $wo.defaultPolicy.groupNumber == '081506')
+#set($isStateDependent = $wo.defaultPolicy.isState && !$wo.thisMember.isSubscriber)
+#set($overrideTempIdCard = $isStateDependent || $delhaize || $wo.defaultPolicy.cityOfDurham)
+#set($wo.defaultPolicy.discontinuedPlan = $loggedInMember.defaultPolicy.discontinuedPlan)
+#set($wo.defaultPolicy.piedmontTriadAirport = $wo.defaultPolicy.groupNumber == '081902')
+#set($wo.defaultPolicy.isCustomNetwork = $loggedInMember.getPolicyAttributeByName($loggedInMember.defaultPolicy.index,'isCustomNetwork') == 'true')
+##
+#set($wo.defaultPolicy.HMOStandard = $wo.defaultPolicy.groupName.indexOf('HMO') != -1 && $wo.defaultPolicy.groupName.indexOf('STANDARD') != -1)
+##
+## Access
+##
+#set($wo.feature.ssn					= $loggedInMember.hasAccess("CMS_SSN"))
+#set($wo.feature.pharmacy				= $loggedInMember.hasPolicyAccess("$loggedInMember.defaultPolicy.index","PHARMACY"))
+#set($wo.feature.seniorDental = false)
+#if($wo.defaultPolicy.isActive)
+	#foreach( $policy in $loggedInMember.membersAndPolicies.policies )
+		#if( $policy.active && $loggedInMember.getPolicyAttributeByName($policy.index,'isSeniorDental') == 'true')
+			#set($wo.feature.seniorDental	= true)
+		#end
+	#end
+#end
+#set($wo.feature.hospitalCompare			= $loggedInMember.hasRole('HospitalCompare'))
+#set($wo.feature.mdLive				= $loggedInMember.hasRole("MDLive"))
+#set($wo.feature.telehealth		= $wo.feature.mdLive)
+##
+## Program Indicators
+##
+## Alere Offerings
+#set($wo.program.alere						= $loggedInMember.programIndicators.alereOffrng == "Y")
+## 24/7 Nurseline
+#set($wo.program.nurseLine247				= $loggedInMember.programIndicators.nursLine247 == "Y")
+## BluePoints
+#set($wo.program.bluePoints				= $loggedInMember.programIndicators.bluePointsElig == "Y")
+## Nutritional Counseling Benefit
+#set($wo.program.nutritionalCounseling		= $loggedInMember.programIndicators.nutrnCnsel == "Y")
+## Asthma Authorization
+#set($wo.program.asthmaAuthorization		= $loggedInMember.programIndicators.asthmaAuth == "Y")
+## Diabetes Authorization
+#set($wo.program.diabetesAuthorization		= $loggedInMember.programIndicators.diabetesAuth == "Y")
+## Asthma Eligibility
+#set($wo.program.asthmaEligibility			 = $loggedInMember.programIndicators.asthmaElig == "Y" && !($wo.defaultPolicy.isGroup && !$wo.feature.grandfathered && ($loggedInMember.getPolicyAttributeByName($wo.defaultPolicy.index,"isTroop") == 'true') && $date.difference("7/1/2015", $dateFormat.format($loggedInMember.defaultPolicy.effectiveDate)).days >= 0))
+## Diabetes Eligibility
+#set($wo.program.diabetesEligibility		= $loggedInMember.programIndicators.diabetesElig == "Y")
+## Custom Override
+#set($wo.program.customOverride			= $loggedInMember.programIndicators.custPrgOff == "Y")
+## Case Management
+#set($wo.program.caseManagement			= $loggedInMember.programIndicators.caseMgmt == "Y")
+## Healthy Outcomes with Group Rewards
+#set($wo.program.healthyOutcomes			= $loggedInMember.programIndicators.healthOut == "Y")
+## Tobacco Cessation
+#set($wo.program.tobaccoCessation			= $loggedInMember.programIndicators.tobaccoCess == "Y")
+## Health Coaching
+#set($wo.program.healthCoach				= $loggedInMember.programIndicators.hlthCoach == "Y")
+## Pain Management Program
+#set($wo.program.painManagement			= $loggedInMember.programIndicators.painMgmtPrgm == "Y" && !$wo.feature.isBBT)
+## Depression Program
+#set($wo.program.depression				= $loggedInMember.programIndicators.depressPrgm == "Y" && !$wo.feature.isBBT)
+## Maternity Program
+#set($wo.program.maternity					= $loggedInMember.programIndicators.maternPrgm == "Y")
+## Online Health Portal
+#set($wo.program.onlineHealthPortal		= $loggedInMember.programIndicators.onlineHlthPortal == "Y")
+## Vale Based Benefits Blue Reward Program
+#set($wo.program.vbbBlueRewardProgram		= $loggedInMember.programIndicators.vbbBlueRewardProgram  == "Y")
+## Taxation Reporting
+#set($wo.program.taxationReporting				= $loggedInMember.programIndicators.taxRptTyp)
+## Redemption Amount
+#set($wo.program.redemptionAmount				= $loggedInMember.programIndicators.redemAmt)
+## Redemption Type
+#set($wo.program.redemptionType				= $loggedInMember.programIndicators.redemType)
+## Incentive Fulfillment
+#set($wo.program.incentiveFulfillment			= $loggedInMember.programIndicators.incentFull)
+## Non-Member Indicator
+#set($wo.program.nonMemberIndicator			= $loggedInMember.programIndicators.nonMember)
+## VIP Group
+#set($wo.program.vipGroup						= $loggedInMember.programIndicators.vIPGroup)
+## Incentive Tracking for Retiree 65 and Over
+#set($wo.program.incentivesRetireeOver65		= $loggedInMember.programIndicators.retirPost65)
+## Incentive Tracking for Retiree Under 65
+#set($wo.program.incentivesRetireeUnder65		= $loggedInMember.programIndicators.retirPre65)
+## Incentive Tracking for Cobra
+#set($wo.program.incentivesCobra				= $loggedInMember.programIndicators.cobraIncent)
+## Incentive Tracking for Active Employees
+#set($wo.program.incentivesActiveEmployees		= $loggedInMember.programIndicators.incentiveTrking)
+## Wellness Design
+#set($wo.program.wellnessDesign				= $loggedInMember.programIndicators.wellDesign && !$wo.feature.isBBT)
+## Disease Management
+#set($wo.program.diseaseManagement				= $loggedInMember.programIndicators.diseaseMgmt)
+## Health Assessment
+#set($wo.program.healthAssessment				= $loggedInMember.programIndicators.hlthAssessment)
+## BlueLink
+#set($wo.program.blueLink			= $wo.defaultPolicy.isActive && $wo.thisMember.age >12 && $wo.defaultPolicy.isMedical && !$wo.defaultPolicy.isState)
+## Tobacco Cessation Campaign
+#set($wo.program.tobaccoCessation		= $wo.defaultPolicy.isActive && $wo.thisMember.age > 18 && $wo.thisMember.age < 65 && $wo.defaultPolicy.isMedical && !$wo.defaultPolicy.isState && ($wo.defaultPolicy.groupNumber != '066046' && $wo.defaultPolicy.groupNumber != '060143' && $wo.defaultPolicy.groupNumber != '080961' && $wo.defaultPolicy.groupNumber != '080960' && $wo.defaultPolicy.groupNumber != '080959' && $wo.defaultPolicy.groupNumber != '081069' && $wo.defaultPolicy.groupNumber != '081070' && $wo.defaultPolicy.groupNumber != '080962' && $wo.defaultPolicy.groupNumber != '080963' && $wo.defaultPolicy.groupNumber != '001036' && $wo.defaultPolicy.groupNumber != '042650' && $wo.defaultPolicy.groupNumber != '060491' && $wo.defaultPolicy.groupNumber != '063797' && $wo.defaultPolicy.groupNumber != '065787' && $wo.defaultPolicy.groupNumber != '075034' && $wo.defaultPolicy.groupNumber != '079185' && $wo.defaultPolicy.groupNumber != '081203' && $wo.defaultPolicy.groupNumber != '10008267' && $wo.defaultPolicy.groupNumber != '062139' && $wo.defaultPolicy.groupNumber != '080790' && $wo.defaultPolicy.groupNumber != '081398' && $wo.defaultPolicy.groupNumber != '081505' && $wo.defaultPolicy.groupNumber != '012456' && $wo.defaultPolicy.groupNumber != '012460' && $wo.defaultPolicy.groupNumber != '012478' && $wo.defaultPolicy.groupNumber != '012479'))
+##
+## show onboarding tile if not these groups or if these groups are true hide onboarding tile
+#set($wo.program.showOnboardingTile = $wo.defaultPolicy.groupNumber != '009204' && $wo.defaultPolicy.groupNumber != '009205' && $wo.defaultPolicy.groupNumber != '012478' && $wo.defaultPolicy.groupNumber != '012456' && $wo.defaultPolicy.groupNumber != '012460' && $wo.defaultPolicy.groupNumber != '012479')
+##
+##
+##
+## HEALTH LINE BLUE
+##
+#set($wo.feature.healthLineBlue				= $wo.program.nurseLine247 && $wo.thisMember.age >17 && $wo.defaultPolicy.isActive && !$wo.defaultPolicy.isState)
+##Previously was $loggedInMember.hasAccess('HEALTH_LINE_BLUE'))
+##
+##
+## Feature Flags
+##
+## Dental
+##
+#set($wo.feature.dental					= $loggedInMember.hasAccess("DENTAL") || $wo.anyPolicy.isDental)
+##
+## Added flag for HealthEquity
+#set($wo.defaultPolicy.paymentPortalHealthEquity = $loggedInMember.getPolicyAttributeByName("paymentPortal") == "HealthEquity")
+##
+##
+## Manage Primary Care Provider
+##
+#set($wo.feature.managePCP				= $wo.anyPolicy.isState || $delhaize)
+##
+## Easy Pay Blue
+##
+#set($wo.feature.easyPayBlue				= !$wo.defaultPolicy.isListBill && $wo.defaultPolicy.isIndividual && !$wo.defaultPolicy.isGroup && $wo.defaultPolicy.isActive && $wo.thisMember.isSubscriber  &&  ($wo.defaultPolicy.medicareAdvantage || $wo.defaultPolicy.medicareSupplement || $wo.defaultPolicy.PDP || $wo.defaultPolicy.isDental))
+##
+## Prescriptions
+#if($wo.defaultPolicy.amisys)
+	#set($wo.feature.prescriptions = $wo.feature.pharmacy)
+#else
+	#set($wo.feature.prescriptions = !$wo.defaultPolicy.isState && !$wo.defaultPolicy.isDental && ($wo.feature.pharmacy || $wo.anyActivePolicy.isPDP || ($wo.defaultPolicy.individual && $wo.defaultPolicy.isMedical && !$wo.defaultPolicy.medicareSupplement) || $wo.defaultPolicy.medicareAdvantage))
+#end
+## ******************
+##
+## Claims
+##
+#set($wo.feature.claims					= $wo.anyPolicy.hasClaims)
+##
+## Claims Forms
+##
+#set($wo.feature.claimsForms				= !$wo.defaultPolicy.medicareAdvantage || ($wo.defaultPolicy.medicareAdvantage && $wo.feature.pharmacy))
+##
+## EOB
+##
+#set($wo.feature.eob					= $wo.thisMember.isSubscriber && !$wo.defaultPolicy.isPDP && !$wo.defaultPolicy.isDental)
+##
+## Doctors and Facilities
+##
+##  added this menu item to medadv members for octe project
+#set($wo.feature.doctorsAndFacilities		= !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.isPDP && !$wo.defaultPolicy.isDental)
+##
+## Wellness
+##
+#set($wo.feature.wellness				= $wo.defaultPolicy.isActive && $wo.defaultPolicy.isMedical && !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.isDental)
+##
+## Benefits
+##
+#set($wo.feature.benefits				= !$wo.defaultPolicy.isPDP && !$wo.defaultPolicy.isDental)
+##
+## Find A Doctor
+##
+#set($wo.feature.findADoctor			= !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.isDental)
+##
+## Find A Dentist
+##
+#set($wo.feature.findADentist			= $wo.defaultPolicy.isDental)
+##
+## Healthcare Summary Report
+##
+#set($wo.feature.healthcareSummaryReport	= $wo.thisMember.isSubscriber && !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.medicareAdvantage && !$wo.defaultPolicy.PDP && !$wo.defaultPolicy.isDental)
+##
+## My Benefit Wallet
+##
+##set($wo.feature.myBenefitWallet			= ($wo.defaultPolicy.groupNumber != '052147' && $wo.defaultPolicy.groupNumber != '055696' && $wo.defaultPolicy.groupNumber != '052598'))
+##
+## Update Contact Info
+##
+#set($wo.feature.updateContactInfo		= ($wo.defaultPolicy.updateContact || $wo.defaultPolicy.isIndividual) && $wo.thisMember.isSubscriber && !$wo.defaultPolicy.onExchange)
+##
+## Manage Your Policy
+##
+#set($wo.feature.manageYourPolicy			= $wo.thisMember.isSubscriber && $wo.defaultPolicy.isIndividual && $wo.defaultPolicy.isActive && !$wo.defaultPolicy.isSeniorAgencyRestricted && !$wo.defaultPolicy.blueAssurance)
+##
+## Renewal (no Over 65)
+##
+#set($wo.feature.renewal			= $wo.thisMember.isSubscriber && $wo.defaultPolicy.isIndividual && $wo.defaultPolicy.isActive && !$wo.defaultPolicy.isOver65 && !$wo.defaultPolicy.blueAssurance)
+##
+##
+## Manage Your Policy for Group Plans
+##
+#set($wo.feature.manageYourPolicyForGroups	= $wo.thisMember.isSubscriber && $wo.defaultPolicy.isGroup && $wo.defaultPolicy.isActive && $wo.defaultPolicy.topaz)
+##
+## Alere
+##
+#set($wo.feature.alere					= $wo.program.alere && $wo.thisMember.age > 17 && $wo.defaultPolicy.isActive)
+##
+## Health Assessment
+##
+#set($wo.feature.healthAssessment		= $wo.thisMember.age > 17 && ($wo.program.healthAssessment == 'HA' || $wo.program.healthAssessment == 'HPA'))
+##
+## Linked Medical and Dental Policies
+##
+#set($wo.feature.linkedMedAndDental		= !$wo.defaultPolicy.isDental && $wo.anyActivePolicy.isDental)
+##
+## Expiration Ranges
+##
+#set($wo.feature.activeWithin90Days			= $date.whenIs($dateFormat.format($loggedInMember.defaultPolicy.expirationDate)).days > -90)
+##
+#set($wo.feature.activeWithin180Days			= $date.whenIs($dateFormat.format($loggedInMember.defaultPolicy.expirationDate)).days > -180)
+##
+#set($wo.feature.activeWithin7Months			= $date.whenIs($dateFormat.format($loggedInMember.defaultPolicy.expirationDate)).months > -7)
+##
+## Manage HSA
+##
+## SM3007 - START
+##
+## Fund Vendor
+##
+#set($wo.feature.fundVendor = $loggedInMember.getPolicyAttributeByName('paymentPortal'))
+#if($wo.feature.fundVendor == 'HealthEquity' && $cookies.get('hsaOther').getValue() == 'true')
+  #set($wo.feature.fundVendor = '')
+#end
+##
+## Manage HSA
+##
+#if($wo.feature.fundVendor == 'BenefitWallet')
+	#set($wo.feature.manageHSA = $wo.thisMember.isSubscriber && $wo.feature.activeWithin180Days && ($wo.defaultPolicy.groupNumber != '052147' && $wo.defaultPolicy.groupNumber != '055696' && $wo.defaultPolicy.groupNumber != '052598'))
+#elseif($wo.feature.fundVendor == 'HealthEquity')
+	#set($wo.feature.manageHSA = $wo.thisMember.isSubscriber && $wo.feature.activeWithin90Days && ($wo.defaultPolicy.groupNumber != '052147' && $wo.defaultPolicy.groupNumber != '055696' && $wo.defaultPolicy.groupNumber != '052598'))
+#end
+##
+## SM3007 - END
+##
+## Manage HRA
+## IF HRA IS HEALTHEQUITY, SET EXPIRATION/RUNOUT AT 90 DAYS, ELSE SET EXPIRATION/RUNOUT AT 180 DAYS
+##if($date.difference($wo.schedule.heqEffectiveDate, $loggedInMember.defaultPolicy.effectiveDate).days >= 0)
+#if($date.difference($heqEffectiveDate, $dateFormat.format($loggedInMember.defaultPolicy.effectiveDate)).days >= 0)
+		#set($wo.feature.manageHRA					= $loggedInMember.hasRole('HRAPortal') && $wo.thisMember.isSubscriber && $wo.feature.activeWithin90Days)
+#else
+		#set($wo.feature.manageHRA					= $loggedInMember.hasRole('HRAPortal') && $wo.thisMember.isSubscriber && $wo.feature.activeWithin180Days)
+#end
+##
+##
+## Logic workaround for Group members with additional individual policy
+## Logic workaround for Manage Policy and Billing & Payments
+#set ($wo.defaultPolicy.isGroupAndIndividualActivePolicy = false)
+#if ($wo.defaultPolicy.isGroup && $wo.anyActivePolicy.isIndividual)
+	#set ($wo.defaultPolicy.isGroupAndIndividualActivePolicy = true)
+#end
+## Update SSN
+##
+#set($wo.feature.updateSSN				= $wo.feature.ssn && !$wo.defaultPolicy.isState)
+##
+## Temporary ID Card - all users should get this link, including dependents - except MA, MAPD, PDP, MEDSUPP
+##
+#set($wo.feature.temporaryIdCard			= !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.PDP && !$wo.defaultPolicy.medicareAdvantage)
+##
+## Manage Billing and Payments
+##
+#set($wo.feature.billingAndPayments   = (($wo.thisMember.isSubscriber && $wo.defaultPolicy.isIndividual) || $wo.defaultPolicy.isGroupAndIndividualActivePolicy) && !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.medicareAdvantage && !$wo.defaultPolicy.PDP)
+#set($wo.feature.legacyBillingAndPayments   = ($wo.defaultPolicy.medicareSupplement || $wo.defaultPolicy.medicareAdvantage || $wo.defaultPolicy.PDP))
+#set($wo.feature.billingAndPaymentsUrl      = "")
+
+#if($wo.feature.billingAndPayments || $wo.feature.legacyBillingAndPayments)
+
+  #set($tempBPEnv = $request.getHeader('Host').substring(0,$request.getHeader('Host').indexOf('.')) )
+
+  #if($tempBPEnv.substring(0,3) != "www")
+    #set($tempBPEnv = "https://www")
+  #else
+    #set($tempBPEnv = "https://www${tempBPEnv.substring(3)}")
+  #end
+
+  ## if($wo.feature.billingAndPayments)
+    #set($wo.feature.billingAndPaymentsUrl = "${tempBPEnv}.bcbsnc.com/members/secure/account/billing/")
+  ## elseif($wo.feature.legacyBillingAndPayments)
+    ## set($wo.feature.billingAndPaymentsUrl = "https://${tempBPEnv}.bcbsnc.com/sapps/members/billing/AccountSummary.do")
+  ## end
+#end
+##
+## Grandfathered Flag
+##
+#set($wo.feature.grandfathered			= $wo.thisMember.isSubscriber && $wo.defaultPolicy.isIndividual && !$wo.defaultPolicy.medicareAdvantage && !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.PDP && $loggedInMember.getPolicyAttributeByName($wo.defaultPolicy.index,'GrandFatherFlag') == 'Y')
+##
+## Transitional Flag
+##
+#set($wo.feature.transitional			= $loggedInMember.getPolicyAttributeByName($wo.defaultPolicy.index,"isTransitional") == 'true')
+##
+##
+## Magellan Health Services AND ACA
+##
+#set($wo.feature.isACAPlan				= !$wo.feature.grandfathered && ($loggedInMember.getPolicyAttributeByName($wo.defaultPolicy.index,"isTroop") == 'true'))
+#set($wo.feature.hasMagellanHealthServices = $wo.feature.isACAPlan || $wo.anyActivePolicy.isHMO)
+##
+##
+## Spanish Benefit Booklet (ACA plans, Under 65, Individual Plan, Subscribers Only)
+##
+#set($wo.feature.showSpanishBenefitBooklet = $wo.feature.isACAPlan && $wo.thisMember.isSubscriber)
+##
+## QB11953 - Remove access to treatment cost estimator for Delhaize members
+## Front end fix to add Delhaize plus a number of different groups until these groups are added on the back end
+## Groups that should not have access: Inactive members, Delhaize, Wake Med, Medicare Supplemental, Medicare Advantage, 65 and over, Dental Only
+##
+##set($wo.feature.costEstimator = $loggedInMember.defaultPolicy.active && $loggedInMember.hasAccess('HEALTH_CARE_COST_ESTIMATOR') && !$wo.defaultPolicy.isDental && !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.medicareAdvantage && ($wo.thisMember.age < 65) && !$delhaize && ($wo.defaultPolicy.groupNumber != '009204') && ($wo.defaultPolicy.groupNumber != '009205'))
+## Hardcoded fix for TCE - True except for the second set of conditions
+## QB15099 removed Delhaize from exclusion logic.
+#set($wo.feature.costEstimator= $loggedInMember.defaultPolicy.active && ($loggedInMember.hasAccess('HEALTH_CARE_COST_ESTIMATOR') || (!$wo.defaultPolicy.isDental && !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.medicareAdvantage && !$wo.defaultPolicy.PDP) && ($wo.defaultPolicy.groupNumber != '009204') && ($wo.defaultPolicy.groupNumber != '009205')))
+##
+## Treatment Cost Estimator temporary unavailable
+## QB15099 removed BlueSelect from filter.
+#set($wo.feature.costEstimatorUnavailable = $wo.defaultPolicy.topaz || $wo.defaultPolicy.blueLocal)
+##
+##
+## Benefit Booklet
+##
+#set($wo.feature.benefitBooklet = !$wo.feature.isBBT && !$wo.defaultPolicy.isState && $wo.defaultPolicy.isActive && $wo.defaultPolicy.lobCode != "IBAS")
+##
+##
+##	#if($group == 'ISAV01')
+##		#set($lobdisplay = "${loggedInMember.defaultPolicy.lobForDisplay} Saver 1")
+##	#elseif($group == 'ISAV02')
+##		#set($lobdisplay = "${loggedInMember.defaultPolicy.lobForDisplay} Saver 2")
+##	#elseif($group == 'ISAV03')
+##		#set($lobdisplay = "${loggedInMember.defaultPolicy.lobForDisplay} Saver 3")
+##	#elseif($group == 'IDTLFE')
+##		#set($lobdisplay = "${loggedInMember.defaultPolicy.lobForDisplay} Blue for Federal Employees")
+##	#elseif($group == 'IDTL01')
+##		#set($lobdisplay = "${loggedInMember.defaultPolicy.lobForDisplay} Blue")
+##	#elseif($lob == 'TB123' || $cookies.get('LOBCode').getValue() == 'TB123')
+##		#set($lobdisplay = "Blue Options 123")
+##	#else
+##		#set($lobdisplay = $loggedInMember.defaultPolicy.lobForDisplay)
+##	#end
+##
+##
+##
+## TEMP OVERRIDES
+##set($tempDentalGroupNumbers = ["072809","066114","075020","077153","054668","060764","078073","011644","052735","074509"])
+##policyHasGroupNumber($wo.defaultPolicy $tempDentalGroupNumbers $tempDental)
+##set($wo.feature.dental = $loggedInMember.hasAccess("DENTAL") || $wo.anyActivePolicy.isDental || $wo.feature.isBBT || $tempDental)
+##set($wo.defaultPolicy.hasDental		= $wo.feature.dental)
+
+## WAKE FOREST UNIVERSITY - WELLNESS OVERRIDE 12/15/2014 - 12/31/2014
+#if($wo.defaultPolicy.groupNumber == '009335' && ($date.whenIs('12/15/2014').seconds <= 0 && $date.whenIs('01/01/2015').seconds >= 0))
+	#set($wo.feature.wellness = false)
+#end
+
+## Set max Expiration Date display (If the expiration date on a policy is later than today + x years, display 'ACTIVE')
+#set($wo.maxExpirationYears = 3)
+
+## BBT PRESCRIPTIONS OVERRRIDE
+#if( !$wo.defaultPolicy.isDental && ($wo.feature.isBBT || $wo.defaultPolicy.groupNumber == '009986' || $wo.defaultPolicy.groupNumber == '009987'
+					  || $wo.defaultPolicy.groupNumber == '011574' || $wo.defaultPolicy.groupNumber == '011575'
+					  || $wo.defaultPolicy.groupNumber == '055223'))
+	#set($wo.feature.prescriptions = true)
+#end
+
+## Contact Preferences
+#set($wo.feature.contactPreferences = !$wo.defaultPolicy.isState && !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.medicareAdvantage && !$wo.feature.seniorDental)
+
+## Blue Rewards limited release (FIBU)
+#if($wo.defaultPolicy.groupNumber != "069114" && !$wo.defaultPolicy.townofcary && !$wo.defaultPolicy.isState)
+	#set($wo.feature.blueRewards = $loggedInMember.getAttribute('isEligibleForBR'))
+	#set($wo.feature.blueRewardsAutoRedeem = $loggedInMember.getAttribute('isAutoRedeemForBR'))
+#else
+	#set($wo.feature.blueRewards = 'N')
+	#set($wo.feature.blueRewardsAutoRedeem = 'N')
+#end
+
+## Blue Rewards normal release
+##if($wo.defaultPolicy.groupNumber == "069114")
+	##set($wo.feature.blueRewards = 'N')
+	##set($wo.feature.blueRewardsAutoRedeem = 'N')
+##else
+	##set($wo.feature.blueRewards = $loggedInMember.getAttribute('isEligibleForBR'))
+	##set($wo.feature.blueRewardsAutoRedeem = $loggedInMember.getAttribute('isAutoRedeemForBR'))
+##end
+
+#set($wo.feature.blueRewardsOn = $wo.feature.blueRewards == 'Y')
+
+#if(!($wo.defaultPolicy.isIndividual && !$wo.defaultPolicy.isOver65) && !$wo.thisMember.bcbsncMember)
+    #parse("members/secure/velocityData/tellblue-exclusion.vm")
+	#set($wo.defaultPolicy.tellBlueSurveyNonExclusion= !$tellBlueExclusion && $wo.thisMember.age > 17 && $wo.thisMember.age < 65 && !$wo.defaultPolicy.medicareSupplement && !$wo.defaultPolicy.medicareAdvantage && !$wo.defaultPolicy.PDP && !$wo.defaultPolicy.fepDental && !$wo.defaultPolicy.isState)
+#else
+	#set($wo.defaultPolicy.tellBlueSurveyNonExclusion=false)
+#end
+
+#if($wo.defaultPolicy.isActive)
+	#foreach( $policy in $loggedInMember.membersAndPolicies.policies )
+		#set($thisActiveDrugPolicy = false)
+		#set($thisActiveDentalPolicy = false)
+		#if($policy.active)
+			#DrugPolicy($policy $thisActiveDrugPolicy )
+			#Dental(	$policy $thisActiveDentalPolicy )
+			#if($thisActiveDrugPolicy)
+				#set($wo.drugPolicy.active			= true)
+				#set($wo.drugPolicy.lobDesc			= $policy.lobDesc)
+				#set($wo.drugPolicy.externalID		= $policy.externalID)
+				#set($wo.drugPolicy.effectiveDate	= $dateFormat.format($policy.effectiveDate))
+				#set($wo.drugPolicy.expirationDate	= $dateFormat.format($policy.expirationDate))
+				#if($date.whenIs($wo.drugPolicy.expirationDate).years >= $wo.maxExpirationYears)
+					#set($wo.drugPolicy.expirationDate = "ACTIVE")
+				#end
+			#end
+			#if($thisActiveDentalPolicy)
+				#set($wo.dentalPolicy.active			= true)
+				#set($wo.dentalPolicy.policyIndex = $policy.index)
+				#set($wo.dentalPolicy.lobDesc			= $policy.lobDesc)
+				#set($wo.dentalPolicy.externalID		= $policy.externalID)
+				#set($wo.dentalPolicy.effectiveDate		= $dateFormat.format($policy.effectiveDate))
+				#set($wo.dentalPolicy.expirationDate	= $dateFormat.format($policy.expirationDate))
+				#if($date.whenIs($wo.dentalPolicy.expirationDate).years >= $wo.maxExpirationYears)
+					#set($wo.dentalPolicy.expirationDate = "ACTIVE")
+				#end
+			#end
+		#end
+	#end
+#else
+	#foreach( $policy in $loggedInMember.membersAndPolicies.policies )
+		#set($wo.drugPolicy.effectiveDate = "1/1/1900")
+		#set($wo.dentalPolicy.effectiveDate = "1/1/1900")
+		#if(!$policy.active)
+			#DrugPolicy($policy $thisDrugPolicy )
+			#Dental(	$policy $thisDentalPolicy )
+			#if($thisDrugPolicy)
+				#if($date.whenIs($dateFormat.format($policy.effectiveDate)).days > $date.whenIs($dateFormat.format($wo.drugPolicy.effectiveDate)).days))
+					#set($wo.drugPolicy.active			= false)
+					#set($wo.drugPolicy.lobDesc			= $policy.lobDesc)
+					#set($wo.drugPolicy.externalID		= $policy.externalID)
+					#set($wo.drugPolicy.effectiveDate	= $dateFormat.format($policy.effectiveDate))
+					#set($wo.drugPolicy.expirationDate	= $dateFormat.format($policy.expirationDate))
+					#if($date.whenIs($wo.drugPolicy.expirationDate).years >= $wo.maxExpirationYears)
+						#set($wo.drugPolicy.expirationDate = "ACTIVE")
+					#end
+				#end
+			#end
+			#if($thisDentalPolicy)
+				#if($date.whenIs($dateFormat.format($policy.effectiveDate)).days > $date.whenIs($dateFormat.format($wo.dentalPolicy.effectiveDate)).days))
+					#set($wo.dentalPolicy.active			= false)
+					#set($wo.dentalPolicy.lobDesc			= $policy.lobDesc)
+					#set($wo.dentalPolicy.externalID		= $policy.externalID)
+					#set($wo.dentalPolicy.effectiveDate		= $dateFormat.format($policy.effectiveDate))
+					#set($wo.dentalPolicy.expirationDate	= $dateFormat.format($policy.expirationDate))
+					#if($date.whenIs($wo.dentalPolicy.expirationDate).years >= $wo.maxExpirationYears)
+						#set($wo.dentalPolicy.expirationDate = "ACTIVE")
+					#end
+				#end
+			#end
+		#end
+	#end
+#end
+
+
+#set($wo.feature.medicarePlanType = '')
+#foreach( $policy in $loggedInMember.membersAndPolicies.policies )
+	#if($loggedInMember.defaultPolicy == $policy)
+		#set($wo.feature.medicarePlanType = $policy.groupName)
+	#end
+#end
+#set($wo.defaultPolicy.HMOStandard = $wo.feature.medicarePlanType.indexOf('HMO') != -1 && $wo.feature.medicarePlanType.indexOf('STANDARD') != -1)
+#set($wo.defaultPolicy.Essential016 = $wo.feature.medicarePlanType.indexOf('HMO') != -1 && $wo.feature.medicarePlanType.indexOf('ESSENTIAL') != -1 && $wo.feature.medicarePlanType.indexOf('016') != -1)
+#set($wo.defaultPolicy.Essential023 = $wo.feature.medicarePlanType.indexOf('HMO') != -1 && $wo.feature.medicarePlanType.indexOf('ESSENTIAL') != -1 && $wo.feature.medicarePlanType.indexOf('023') != -1)
+
+
+
+## Flag created to target a specific group
+## IU65 topaz members with one active policy
+
+	#set($wo.defaultPolicy.billingRedirect = false)
+
+	#if ( $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-05-05 09:00:00')).seconds <= 0 && $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-05-18 08:00:00')).seconds >= 0 )
+		#if ($wo.feature.billingAndPayments)
+			#if($wo.defaultPolicy.topaz && $wo.defaultPolicy.isIndividual && $wo.defaultPolicy.isActive && $wo.thisMember.policies == 1)
+				#set($wo.defaultPolicy.billingRedirect = true)
+			#end
+		#end
+	#end
+
+## End Specific Group Flag
+
+
+
+
+## UNC System Group
+##
+	## This includes all Student Blue groups, not just UNC Student Blue groups
+	#set($groupInt = 0)
+	#set($groupInt = $math.toInteger($wo.defaultPolicy.groupNumber))
+	#if((($groupInt >= 12531) && ($groupInt <= 12562)) || ($groupInt == 8312) || ($groupInt == 12581) || ($groupInt == 11631) || ($groupInt == 11632) || ($groupInt == 11634) || ($groupInt == 11710) || (($groupInt >= 12432) && ($groupInt <= 11434)) || ($groupInt == 12566) || ($groupInt == 80610))
+		#set($isUNCSystem = true)
+	#end
+
+##
+
+
+## Medicare Supplement Plan F High Deductible
+#set($wo.program.medicareSupPlanFHD = $wo.thisMember.benefitPackage == 'UN' || $wo.thisMember.benefitPackage == 'QZ' || $wo.thisMember.benefitPackage == '8Z')
+
+
+## Medicare Supplement Plan D
+#set($wo.program.medicareSupPlanD = $wo.thisMember.benefitPackage == 'PD')
+
+## LiveChat activate
+## individual U65 && ["080959","080960","080961","080962","080963","081070","008952","009971","080984","081069"]
+
+#set($wo.feature.isLiveChat = false)
+#set($wo.feature.isLiveChatSignatureService = false)
+
+#if($loggedInMember.getAttribute('enterprisePersonId') && $loggedInMember.getAttribute('enterprisePersonId') != "")
+
+    #foreach( $liveChatSignatureGroup in ["080959","080960","080961","080962","080963","081070","008952","009971","080984","081069"] )
+        #if($liveChatSignatureGroup == $wo.defaultPolicy.groupNumber)
+            #set($wo.feature.isLiveChatSignatureService = true)
+        #end
+    #end
+
+    #if($wo.feature.isLiveChatSignatureService || ($wo.defaultPolicy.isIndividual && !$wo.defaultPolicy.isOver65) || $wo.defaultPolicy.isState )
+    	#if($wo.defaultPolicy.isMedical)
+        	#set($wo.feature.isLiveChat = true)
+        #end
+    #end
+
+#end
+
+
+#set ($wo.defaultPolicy.maintenanceTimer = false)
+#if ( $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-01-30 21:00:00')).seconds <= 0 && $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-07-01 07:00:00')).seconds >= 0 )
+	#set ($wo.defaultPolicy.maintenanceTimer = true)
+#end
+
+## Shortened Line of Business Descriptions
+
+#if($loggedInMember.defaultPolicy.lobCode == 'ICLT' || $loggedInMember.defaultPolicy.lobCode == 'CHLT')
+	#set($loggedInMember.defaultPolicy.lobDesc = 'Blue Local with Carolinas Health System')
+#end
+#if($loggedInMember.defaultPolicy.lobCode == 'TRNG' || $loggedInMember.defaultPolicy.lobCode == 'ITNG')
+	#set($loggedInMember.defaultPolicy.lobDesc = 'Blue Local with Duke Medicine and WakeMed')
+#end
+
+## Shortened Line of Business Descriptions End
+
+## ASO Standard Group Numbers to see Recent Change PDF on Benefits page
+#set($ASOStdGroupNumbers = [
+"075879","082011","055689","073893","011642","073800","081952","081730",
+"081932","081107","081982","081071","081978","081927","082035","082041",
+"082036","075314","081061","081562","081215","073401","080996","081085",
+"079563","081307","081709","080216","081906","081949","081950","082050",
+"081264","082052","081902","081998","081636","055491","082045","081741",
+"081701","081970","081309","026106","081985","082053","081508",
+"081365","074300","011711","054211","080435","081364"
+])
+
+#set($thisGroupNumber = $wo.defaultPolicy.groupNumber)
+#set($wo.defaultPolicy.isASOStd = false)
+#foreach( $testNumber in $ASOStdGroupNumbers )
+	#if($thisGroupNumber == $testNumber)
+		#set($wo.defaultPolicy.isASOStd = true)
+	#end
+#end
+
+## Promo Period for Chat and Inbox for State Health Plan members
+#set ($wo.defaultPolicy.isChatInboxPromoPeriod = false)
+#if ( $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-09-06 21:00:00')).seconds <= 0 && $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-12-07 07:00:00')).seconds >= 0 )
+	#if($wo.defaultPolicy.isState)
+		#set ($wo.defaultPolicy.isChatInboxPromoPeriod = true)
+	#end
+#end
+
+## Manage You Policy 1095B Form TnR Access Check
+#set($wo.feature.managePolicyTnrForm  = false)
+#if($wo.thisMember.isSubscriber && $wo.defaultPolicy.isMedical && !$wo.defaultPolicy.onExchange && (($wo.defaultPolicy.isIndividual) || (!$wo.defaultPolicy.ASO || $wo.defaultPolicy.topaz )))
+	#set($wo.feature.managePolicyTnrForm  = true)
+#end
+
+## Billing and Payment Draft Dates Changing Alerts
+#set ($wo.defaultPolicy.billingDraftDateChange = false)
+#if ( $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-09-06 21:00:00')).seconds <= 0 && $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-10-03 07:00:00')).seconds >= 0 )
+	#if($wo.feature.billingAndPayments != "" && !$wo.defaultPolicy.isGroup && !$wo.defaultPolicy.isOver65 && !$wo.feature.seniorDental)
+		#set ($wo.defaultPolicy.billingDraftDateChange = true)
+	#end
+#end
+
+
+## CPC SPAM/HELD email classification
+#foreach( $contactDetail in $loggedInMember.getAttribute('contactDetails'))
+	#if($contactDetail.deliveryChannel == 'EMAIL')
+		#set($currentEmail = $contactDetail.currentDeliveryAddress)
+		#set($pendingEmail = $contactDetail.pendingDeliveryAddress)
+		#set($deliveryParams = $contactDetail.deliveryParameters)
+		#set($isVerified = $contactDetail.isVerified)
+		#set($verificationToken = $contactDetail.verifyToken)
+	#elseif($contactDetail.deliveryChannel == 'CELLPHONE')
+		#set($mobilePhone = $contactDetail.currentDeliveryAddress)
+	#end
+#end
+
+#set($wo.feature.deliveryHeld = $deliveryParams == 'HELD')
+#set($wo.feature.deliverySpam = $deliveryParams == 'SPAM')
+
+## Grandfathered Plans Discontinued Messaging
+#set ($wo.defaultPolicy.gfPlansDiscontinued = false)
+#set ($wo.defaultPolicy.discontinuedMessage1 = false)
+#set ($wo.defaultPolicy.discontinuedMessage2 = false)
+#set ($wo.defaultPolicy.discontinuedMessage3 = false)
+#if($wo.feature.grandfathered && $wo.defaultPolicy.grandfathered)
+	#set ($wo.defaultPolicy.gfPlansDiscontinued = true)
+#end
+
+#if ( $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-10-12 01:00:00')).seconds <= 0 && $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-10-31 23:59:59')).seconds >= 0 )
+	#set ($wo.defaultPolicy.discontinuedMessage1 = true)
+#end
+
+#if ( $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-11-01 01:00:00')).seconds <= 0 && $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-12-15 23:59:59')).seconds >= 0 )
+	#set ($wo.defaultPolicy.discontinuedMessage2 = true)
+#end
+
+#if ( $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-12-16 01:00:00')).seconds <= 0 && $date.whenIs($date.toDate('yyyy-M-d H:m:s', '2017-12-31 23:59:59')).seconds >= 0 )
+	#set ($wo.defaultPolicy.discontinuedMessage3 = true)
+#end
+
+#set ($wo.defaultPolicy.discontinuedMessage4 = false)
+
+#if ($wo.defaultPolicy.onExchange)
+	#set ($wo.defaultPolicy.discontinuedMessage4 = true)
+	#foreach( $policy in $loggedInMember.membersAndPolicies.policies )
+		#if ($date.difference("1/1/2018", $dateFormat.format($policy.effectiveDate)).days >= 0)
+			#set ($wo.defaultPolicy.discontinuedMessage4 = false)
+		#end
+	#end
+#end
+
+
+
+#* ALWAYS PLACE AT BOTTOM, OVERRIDES FOR ALLOWING DEBUGGING *#
+#parse("members/secure/velocityData/debugger.vm")
+#end
