@@ -95,15 +95,18 @@
               </div>
 
               <div class="care-option-intro">
-                <div class="row">
+                <div class="row care-option-intro-content">
                   <div class="col-sm-4 icon icon-stethoscope">
-                    <h3 class="h3 univers condensed bold">Choose if you:</h3>
-                    <ul>
-                      <li>Have an illness, injury, pain or health issue</li>
-                      <li>Need a prescription or refill</li>
-                      <li>Need help managing a long-term condition like high blood pressure, diabetes or asthma</li>
-                      <li>Want to prevent problems (preventive care, like checkups or vaccines)</li>
-                    </ul>
+                    <!-- <div class="grey-border-left"></div> -->
+                    <div class="intro-content">
+                      <h3 class="h3 univers condensed bold">Choose if you:</h3>
+                      <ul>
+                        <li>Have an illness, injury, pain or health issue</li>
+                        <li>Need a prescription or refill</li>
+                        <li>Need help managing a long-term condition like high blood pressure, diabetes or asthma</li>
+                        <li>Want to prevent problems (preventive care, like checkups or vaccines)</li>
+                      </ul>
+                    </div>
                   </div>
                   <div class="col-sm-4 icon icon-clock">
                     <h3 class="h3 univers condensed bold">Average wait time:</h3>
@@ -164,72 +167,156 @@
           </div>
         </div>
         
-        <!-- Health Line Blue -->
-        <div class="row">
-          <div class="col-xs-12">
-            <article class="care-option">
-              <div class="care-option-title">
-                <h2>Health Line Blue (1-877-477-2424)</h2>
-              </div>
-
-              <div class="care-option-intro">
-                <div class="row">
-                  <div class="col-sm-4 icon icon-stethoscope">
-                    <h3 class="h3 univers condensed bold">Choose if you:</h3>
-                    <ul>
-                      <li>Aren't sure where to go</li>
-                      <li>Want to discuss options for at-home symptom relief until you can see your doctor</li>
-                      <li>Have health questions</li>
-                    </ul>
-                  </div>
-                  <div class="col-sm-4 icon icon-clock">
-                    <h3 class="h3 univers condensed bold">Average wait time:</h3>
-                    <ul>
-                      <li><strong>16 seconds</strong><sup class="sm">1</sup></li>
-                    </ul>
-                  </div>
-                  <div class="col-sm-4 icon icon-cost">
-                    <h3 class="h3 univers condensed bold">Average member cost:</h3>
-                    <p>$0</p>
-                  </div>
+        #if($wo.feature.healthLineBlue)
+          <!-- Health Line Blue -->
+          <div class="row">
+            <div class="col-xs-12">
+              <article class="care-option">
+                <div class="care-option-title">
+                  <h2>Health Line Blue (1-877-477-2424)</h2>
                 </div>
-                
-                <p class="expand-collapse-button">
-                  <a role="button" data-toggle="collapse" href="#option-hlb" aria-exanded="false" aria-controls="option-hlb" class="collapsed">
-                    <span class="collapse-show"><strong>Expand</strong> to learn more about this option &raquo;</span>
-                    <span class="collapse-hide">View Less &raquo;</span>
-                  </a>
-                </p>
-              </div>
 
-              <div class="care-option-content collapse" role="tabpanel" id="option-hlb">
-                <div class="callout bg-white pull-right col-sm-4">
-                  <h4 class="h4">Good choice for:</h4>
+                <div class="care-option-intro">
+                  <div class="row care-option-intro-content">
+                    <div class="col-sm-4 icon icon-stethoscope">
+                      <h3 class="h3 univers condensed bold">Choose if you:</h3>
+                      <ul>
+                        <li>Aren't sure where to go</li>
+                        <li>Want to discuss options for at-home symptom relief until you can see your doctor</li>
+                        <li>Have health questions</li>
+                      </ul>
+                    </div>
+                    <div class="col-sm-4 icon icon-clock">
+                      <h3 class="h3 univers condensed bold">Average wait time:</h3>
+                      <ul>
+                        <li><strong>16 seconds</strong><sup class="sm">1</sup></li>
+                      </ul>
+                    </div>
+                    <div class="col-sm-4 icon icon-cost">
+                      <h3 class="h3 univers condensed bold">Average member cost:</h3>
+                      <p>$0</p>
+                    </div>
+                  </div>
+                  
+                  <p class="expand-collapse-button">
+                    <a role="button" data-toggle="collapse" href="#option-hlb" aria-exanded="false" aria-controls="option-hlb" class="collapsed">
+                      <span class="collapse-show"><strong>Expand</strong> to learn more about this option &raquo;</span>
+                      <span class="collapse-hide">View Less &raquo;</span>
+                    </a>
+                  </p>
+                </div>
+
+                <div class="care-option-content collapse" role="tabpanel" id="option-hlb">
+                  <div class="callout bg-white pull-right col-sm-4">
+                    <h4 class="h4">Good choice for:</h4>
+                    <ul class="list">
+                      <li><a href="#minor-health-issues">Minor health issues</a></li>
+                      <li><a href="#moderate-health-issues">Moderate health issues</a></li>
+                    </ul>
+                  </div>
+
+                  <p>You can talk to a nurse anytime&mdash;day or night&mdash; by calling Health Line Blue. They'll help you decide the best place to get care based on your symptoms. They can also help you treat your issue at home or
+                    ease your symptoms until you can get in to see your doctor.</p>
+
+                  <p><strong>Just call 1-877-477-2424 (toll-free).</strong> We've included Health Line Blue on your <a href="/assets/campaigns/public/u12242a_er_utilization_quick_reference_guide.pdf" target="_blank">Quick Reference Guide</a> so you'll have
+                    their number close by. Save it in your phone, too. You'll also find the nurse support line listed on your member ID card, your benefit booklet, Blue Cross NC’s mobile app and the Blue Connect member site.</p>
+                  <h2 class="h4 text-blue-medium">What to expect</h2>
+                  <p>You'll connect with a nurse quickly to talk through your options. And best of all, Health Line Blue is free!</p>
+                  <h2 class="h4 text-blue-medium">Experts on-call for you&mdash;24 hours a day, 7 days a week</h2>
+                  <p>Health Line Blue is also a great resource for many things beyond just finding care. Make them your first call when you want to:</p>
                   <ul class="list">
-                    <li><a href="#minor-health-issues">Minor health issues</a></li>
-                    <li><a href="#moderate-health-issues">Moderate health issues</a></li>
+                    <li><strong>Get quick answers:</strong> Find out what your symptoms may mean; learn how to treat injuries or illnesses at home; ask about things you don't understand after a doctor's visit</li>
+                    <li><strong>Check treatments:</strong> Understand your medications; get support when making decisions on tests or other procedures; learn about other treatment options that may be available</li>
+                    <li><strong>Feel your best:</strong> Learn more about managing chronic conditions, like high blood pressure, diabetes or asthma; ask questions about your medications; prep for an upcoming doctor's visit</li>
                   </ul>
                 </div>
-
-                <p>You can talk to a nurse anytime&mdash;day or night&mdash; by calling Health Line Blue. They'll help you decide the best place to get care based on your symptoms. They can also help you treat your issue at home or
-                  ease your symptoms until you can get in to see your doctor.</p>
-
-                <p><strong>Just call 1-877-477-2424 (toll-free).</strong> We've included Health Line Blue on your <a href="/assets/campaigns/public/u12242a_er_utilization_quick_reference_guide.pdf" target="_blank">Quick Reference Guide</a> so you'll have
-                  their number close by. Save it in your phone, too. You'll also find the nurse support line listed on your member ID card, your benefit booklet, Blue Cross NC’s mobile app and the Blue Connect member site.</p>
-                <h2 class="h4 text-blue-medium">What to expect</h2>
-                <p>You'll connect with a nurse quickly to talk through your options. And best of all, Health Line Blue is free!</p>
-                <h2 class="h4 text-blue-medium">Experts on-call for you&mdash;24 hours a day, 7 days a week</h2>
-                <p>Health Line Blue is also a great resource for many things beyond just finding care. Make them your first call when you want to:</p>
-                <ul class="list">
-                  <li><strong>Get quick answers:</strong> Find out what your symptoms may mean; learn how to treat injuries or illnesses at home; ask about things you don't understand after a doctor's visit</li>
-                  <li><strong>Check treatments:</strong> Understand your medications; get support when making decisions on tests or other procedures; learn about other treatment options that may be available</li>
-                  <li><strong>Feel your best:</strong> Learn more about managing chronic conditions, like high blood pressure, diabetes or asthma; ask questions about your medications; prep for an upcoming doctor's visit</li>
-                </ul>
-              </div>
-            </article>
+              </article>
+            </div>
           </div>
-        </div>
+        #end
 
+        #if($wo.feature.telehealth)
+          <!-- MDLIVE® (TELEHEALTH) -->
+          <div class="row">
+              <div class="col-xs-12">
+                <article class="care-option">
+                  <div class="care-option-title">
+                    <h2>MDLIVE® (TELEHEALTH)</h2>
+                  </div>
+    
+                  <div class="care-option-intro">
+                    <div class="row care-option-intro-content">
+                      <div class="col-sm-4 icon icon-stethoscope">
+                        <h3 class="h3 univers condensed bold">Choose if you:</h3>
+                        <ul>
+                          <li>Have a minor health issue like a cold, the flu, allergies or pink eye</li>
+                          <li>Want the convenience of a video consult at home, at work or on the go</li>
+                          <li>Need care on nights, weekends or when your doctor isn’t able to see you</li>
+                        </ul>
+                      </div>
+                      <div class="col-sm-4 icon icon-clock">
+                        <h3 class="h3 univers condensed bold">Average wait time:<sup class="sm">1,2</sup></h3>
+                        <ul>
+                          <li><strong>10 minutes</strong> to start a consult (can vary)</li>
+                          <li><strong>30 minutes</strong> total visit</li>
+                        </ul>
+                      </div>
+                      <div class="col-sm-4 icon icon-cost">
+                        <h3 class="h3 univers condensed bold">Average member cost:<sup class="sm">3</sup></h3>
+                        <p>$45 or less (varies by plan)</p>
+                      </div>
+                    </div>
+                    
+                    <p class="expand-collapse-button">
+                      <a role="button" data-toggle="collapse" href="#option-telehealth-mdlive" aria-exanded="false" aria-controls="option-telehealth-mdlive" class="collapsed">
+                        <span class="collapse-show"><strong>Expand</strong> to learn more about this option &raquo;</span>
+                        <span class="collapse-hide">View Less &raquo;</span>
+                      </a>
+                    </p>
+                  </div>
+    
+                  <div class="care-option-content collapse" role="tabpanel" id="option-telehealth-mdlive">
+                    <div class="callout bg-white pull-right col-sm-4">
+                      <h4 class="h4">Good choice for:</h4>
+                      <ul class="list">
+                        <li><a href="#minor-health-issues">Minor health issues</a></li>
+                      </ul>
+                    </div>
+    
+                    <p>
+                      Telehealth from MDLIVE is a good care option for minor health issues when you can’t see your doctor. 
+                      Start a video consult with a board-certified doctorin just minutes using your smartphone, tablet or PC. 
+                      It’s available 24 hours a day, seven days a week—even on holidays.<a href="#">Watch this video to see how it works</a>.</p>
+    
+                    <p>
+                        Sunburn at the beach? Stomach bug on Thanksgiving? In a rural area with no doctors nearby? 
+                        Think you’ve got the flu but don’t feel up to driving to your doctor’s office? 
+                        These are just a few of the reasons people use telehealth. 
+                        If you haven’t tried it yet, we explain how to get started the “Next Steps” section at the bottom of this page.
+                    </p>
+                    <h2 class="h4 text-blue-medium">What to expect</h2>
+                    <p>
+                        Telehealth is often more convenient and cost effective than going to urgent care.
+                        While wait times can vary based on demand, the average is 10 minutes.<sup class="sm">1</sup>
+                        The consult itself generally lasts 10 to 30 minutes.<sup class="sm">2</sup>
+                        And you’ll pay for each video consult the same as an office visit with your primary care doctor.<sup class="sm">3</sup> That means:
+                    </p>
+                    <ul class="list">
+                      <li><strong>If your plan has a copay: </strong>pay the usual copay for a doctor’s visit. </li>
+                      <li><strong>If your plan has a deductible and coinsurance: </strong>You’ll pay no more than $45. (After meeting your deductible, you’ll pay your coinsurance portion of the $45.)</li>
+                    </ul>
+                    <h2 class="h4 text-blue-medium">Perks of telehealth</h2>
+                    <p>MDLIVE has a 97% satisfaction rating—and 97% of patients would recommend it.<sup class="sm">5</sup> Here are just some of the reasons why:</p>
+                    <ul class="list">
+                      <li><strong>Quality care: </strong>MDLIVE’s doctors are board certified with an average of 15 years’ experience.<sup class="sm">5</sup> Specialties range from primary care and internal medicine, to pediatrics and family medicine. You’re only shown doctors who are licensed to practice in your state. Visits are private and secure. Your personal health information is protected.</li>
+                      <li><strong>Convenience: </strong>On the couch, at work, travelling—you can use MDLIVE anywhere in the United States. There’s no need to make an appointment, unless you want to see a specific doctor. And if you need a prescription, the MDLIVE doctor can electronically send it to your local pharmacy.<sup class="sm">5</sup></li>
+                    </ul>
+                  </div>
+                </article>
+              </div>
+            </div>
+        #end
+  
         <!-- Urgent Care Center -->
         <div class="row">
           <div class="col-xs-12">
@@ -239,7 +326,7 @@
               </div>
 
               <div class="care-option-intro">
-                <div class="row">
+                <div class="row care-option-intro-content">
                   <div class="col-sm-4 icon icon-stethoscope">
                     <h3 class="h3 univers condensed bold">Choose if you:</h3>
                     <ul>
@@ -313,7 +400,7 @@
               </div>
 
               <div class="care-option-intro">
-                <div class="row">
+                <div class="row care-option-intro-content">
                   <div class="col-sm-4 icon icon-stethoscope">
                     <h3 class="h3 univers condensed bold">Choose if you:</h3>
                     <ul>
@@ -463,9 +550,22 @@
             <p>If you don't have a doctor yet, first read <a href="http://blog.bcbsnc.com/2015/03/five-tips-for-choosing-a-new-primary-care-physician/" target="_blank">these 5 tips for choosing one</a>. Then, use <a href="http://www.bcbsnc.com/content/providersearch/index.htm"
                   target="_blank">our Find a Doctor tool</a> to choose one and schedule an initial health checkup.</p>
 
-            <h2 class="h2">Add Health Line Blue to your phone's contact list.</h2>
-            <p>Never used Health Line Blue? Often, making that first call helps you feel comfortable using it in the future. So do it today by calling 1-877-477-2424. (Save this number in your phone for easy access.) You can ask any health questions that
+            #if($wo.feature.healthLineBlue)
+              <h2 class="h2">Add Health Line Blue to your phone's contact list.</h2>
+              <p>Never used Health Line Blue? Often, making that first call helps you feel comfortable using it in the future. So do it today by calling 1-877-477-2424. (Save this number in your phone for easy access.) You can ask any health questions that
               are on your mind&mdash;or simply learn more about the care options we've talked about here. They can also help you with things like preventive care, managing chronic conditions or prepping for a doctor's visit.</p>
+            #end
+
+            #if($wo.feature.telehealth)
+              <h2 class="h2">Set up your secure MDLIVE account for free—then bookmark their site.</h2>
+              <p>Haven’t activated your MDLIVE account yet? Take a moment to do it now so it’s ready when you need it. Here are 4 ways to sign up:</p>
+              <ul class="list">
+                <li><strong>Download the MDLIVE app </strong>on your smartphone or tablet (get it for iOS devices <a href="#">here</a> and for Android devices <a href="#">here</a>)</li>
+                <li><strong>Go to </strong><a href="#">mdlive.com/ncvideodoc</a> click <strong>“Activate Now”</strong></li>
+                <li><strong>Call888-657-998</strong></li>
+                <li><strong>Text“videodoc” to 635483 </strong>connect with <strong>Sophie</strong>, MDLIVE’s health assistant chatbot that’ll guide you through the process</li>
+              </ul>
+            #end
             
             <h2 class="h2">Choose your back-up option by locating an urgent care center close to home.</h2>
             <p>Check out <a href="https://healthnav.bcbsnc.com/facility?search_specialty_id=204&ci=DFT&geo_location=gps" target="_blank">our Urgent Care Finder tool</a> to find a clinic that's nearby. You'll want to add this information on <a href="/assets/campaigns/public/u12242a_er_utilization_quick_reference_guide.pdf"
@@ -498,7 +598,12 @@
           <div class="col-xs-12 legal-copy">
             <p><strong>This is not medical advice. Consult a medical professional and seek assistance in an emergency.</strong></p>
             <ol class="footnotes break-links">
-              <li>Nurse24 Detail/Nurse Line Performance Report Optum: Q4 2016.</li>
+              #if($wo.feature.healthLineBlue)
+                <li>Nurse24 Detail/Nurse Line Performance Report Optum: Q4 2016.</li>
+              #end
+              #if($wo.feature.telehealth)
+                <li>MDLIVE — Wait times can vary based on demand. Quality of Care Management System. MDLIVE: 2017.</li>
+              #end
               <li>"Vitals Annual Wait Time Report: March 2017." Online: <a href="http://www.vitals.com/about/portfolio/wait-time-report-2017" target="_blank">www.vitals.com/about/portfolio/wait-time-report-2017</a> (accessed June 2017).</li>
               <li>Shaw, Meredith K., et al. "The duration of office visits in the United States, 1993 to 2010." <em>The American Journal of Managed Care</em> 20.10 (2014): 820-826.</li>
               <li>Average cost to Blue Cross NC members across commercial group plans. Based on Blue Cross NC internal data for 12 months ending December 2016. Emergency room costs include both facility and professional charges - and combine copayment, deductible and coinsurance.</li>

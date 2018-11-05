@@ -84,7 +84,7 @@
 }
 
 .list li:before {
-	color: #333;
+	color: #0e92c7;
 	margin-left: -20px
 }
 
@@ -110,14 +110,32 @@
 	font-size: 14px
 }
 
-.care-option .care-option-content,
-.care-option .care-option-intro {
+.care-option .care-option-content {
 	background-color: #ddeef4;
-	padding: 15px
+	padding: 15px;
+	border-bottom: 1px solid darkgrey;
+	border-left: 1px solid darkgrey;
+	border-right: 1px solid darkgrey;
 }
 
 .care-option .care-option-intro {
-	border-bottom: 1px solid #04506e
+	border: 1px solid darkgrey;
+	background-color: #ddeef4;
+	/* padding: 5px; */
+}
+
+.grey-border-right {
+	border-right: 1px solid darkgrey;
+}
+
+.grey-border-left {
+	border-right: 1px solid darkgrey;
+	height: 400px;
+}
+
+.intro-content:before {
+	border-left: 1px solid darkgrey;
+    height: 300px;
 }
 
 .care-option .care-option-intro .h3 {
@@ -125,8 +143,15 @@
 	font-weight: 700
 }
 
+.care-option-intro-content {
+	border-bottom: 1px solid darkgrey;
+	margin-left: 0;
+	margin-right: 0;
+}
+
 .care-option .care-option-intro .icon {
-	padding-left: 64px
+	padding-left: 64px;
+	/* border: 1px solid darkgrey; */
 }
 
 .care-option .care-option-intro .icon:before {
@@ -149,7 +174,7 @@
 }
 
 .care-option .care-option-intro .icon.icon-stethoscope:before {
-	background-image: url(../images/steth_icon.png)
+	background-image: url(../images/steth_icon.png);
 }
 
 .care-option .care-option-intro .icon.icon-clock:before {
@@ -174,7 +199,10 @@
 }
 
 .care-option .care-option-intro .expand-collapse-button a {
-	font-family: LinotypeUniversW01-Cn, sans-serif
+	font-family: LinotypeUniversW01-Cn, sans-serif;
+	display: inline-block;
+	margin-top: 8px;
+
 }
 
 .care-option .care-option-intro .expand-collapse-button a strong {
