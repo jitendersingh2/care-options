@@ -150,7 +150,7 @@
 }
 
 .care-option .care-option-intro .icon {
-	padding-left: 64px;
+	/*padding-left: 64px;*/
 	/* border: 1px solid darkgrey; */
 }
 
@@ -173,16 +173,32 @@
 	height: 37px
 }
 
-.care-option .care-option-intro .icon.icon-stethoscope:before {
-	background-image: url(../images/steth_icon.png);
+.care-option .care-option-intro .icon.icon-stethoscope {
+	border-right: 1px solid darkgrey;
+	height: 152px;
 }
 
-.care-option .care-option-intro .icon.icon-clock:before {
-	background-image: url(../images/clock_icon.png)
+.care-option .care-option-intro .icon.icon-clock {
+	border-right: 1px solid darkgrey;
+	border-left: 1px solid darkgrey;
+	height: 152px;
 }
 
-.care-option .care-option-intro .icon.icon-cost:before {
-	background-image: url(../images/dollar_icon.png)
+.care-option .care-option-intro .icon.icon-cost {
+	border-left: 1px solid darkgrey;
+	height: 152px;
+}
+
+.doctor-icon-stethoscope-border, .doctor-icon-clock-border, .doctor-icon-cost-border {
+	height: 220px!important;
+}
+
+.mdlive-icon-stethoscope-border, .mdlive-icon-clock-border, .mdlive-icon-cost-border {
+	height: 172px!important;
+}
+
+.eroom-icon-stethoscope-border, .eroom-icon-clock-border, .eroom-icon-cost-border {
+	height: 90px!important;
 }
 
 .care-option .care-option-intro ul {
@@ -320,7 +336,7 @@
 }
 
 #next-steps {
-	background-color: #ddeef4;
+/*background-color: #ddeef4;*/
 	padding: 30px 0;
 	box-shadow: inset 0 -2px 10px rgba(0, 0, 0, .25)
 }
@@ -336,6 +352,10 @@
 
 a:link {
 	color: #0e92c7
+}
+
+footnotes {
+	padding-left: 12px;
 }
 
 #footer-legal {
